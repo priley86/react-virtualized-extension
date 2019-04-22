@@ -118,18 +118,29 @@ var Body = function (_React$Component) {
       return renderedRows;
     };
 
-    _this.getBodyOffset = function () {
-      return (
-        // possibly a bug in reactabular-virtualized
-        // this.tbodyRef.parentElement.offsetTop + this.tbodyRef.offsetTop;
-        _this.tbodyRef.offsetTop
-      );
+    _this.getBodyOffset = function (container) {
+      // possibly a bug in reactabular-virtualized
+      // this.tbodyRef.parentElement.offsetTop + this.tbodyRef.offsetTop;
+      console.log(_this.tbodyRef.getBoundingClientRect().top - container.getBoundingClientRect().top);
+      return _this.tbodyRef.getBoundingClientRect().top - container.getBoundingClientRect().top;
+      // return this.tbodyRef.offsetTop;
     };
 
     _this.registerContainer = function () {
       setTimeout(function () {
-        _this.props.container() && _this.props.container().addEventListener('scroll', _this.onScroll);
+        var element = _this.props.container();
+        element && element.addEventListener('scroll', _this.onScroll);
+        _this._detectElementResize = createDetectElementResize();
+        _this._detectElementResize.addResizeListener(element, _this.onResize);
+        _this.setContainerOffset();
       }, 0);
+    };
+
+    _this.setContainerOffset = function () {
+      var element = _this.props.container();
+      if (element) {
+        _this.containerOffset = _this.getBodyOffset(element);
+      }
     };
 
     _this.calculateRows = function () {
@@ -160,9 +171,12 @@ var Body = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.checkMeasurements();
-      this.props.container && this.registerContainer();
-      this._detectElementResize = createDetectElementResize();
-      this._detectElementResize.addResizeListener(this.tbodyRef, this.onResize);
+      if (this.props.container) {
+        this.registerContainer();
+      } else {
+        this._detectElementResize = createDetectElementResize();
+        this._detectElementResize.addResizeListener(this.tbodyRef, this.onResize);
+      }
     }
   }, {
     key: 'componentDidUpdate',
@@ -183,6 +197,7 @@ var Body = function (_React$Component) {
       this.scrollTop = 0;
       this.setState(initialContext);
       this.measuredRows = {};
+      this.setContainerOffset();
       this.checkMeasurements();
     }
   }, {
@@ -201,7 +216,7 @@ var Body = function (_React$Component) {
       if (this.scrollTop === scrollTop) {
         return;
       }
-      this.scrollTop = container ? scrollTop - this.getBodyOffset() : scrollTop;
+      this.scrollTop = container ? scrollTop - this.containerOffset : scrollTop;
       this.setState(this.calculateRows());
     }
   }, {
@@ -248,9 +263,13 @@ var Body = function (_React$Component) {
             'data-rowkey': extra.rowKey
           }, _onRow ? _onRow(row, extra) : {});
         },
-        rowsToRender: rowsToRender,
-        onScroll: this.onScroll
+        rowsToRender: rowsToRender
       });
+
+      // do not listen to tbody onScroll if we are using window scroller
+      if (!container) {
+        tableBodyProps.onScroll = this.onScroll;
+      }
 
       return React.createElement(
         VirtualizedBodyContext.Provider,

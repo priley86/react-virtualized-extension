@@ -99,15 +99,28 @@ class Body extends React.Component {
     return renderedRows;
   };
 
-  getBodyOffset = () =>
-    // possibly a bug in reactabular-virtualized
-    // this.tbodyRef.parentElement.offsetTop + this.tbodyRef.offsetTop;
-    this.tbodyRef.offsetTop;
+  getBodyOffset = container =>
+    // this is a bug in reactabular-virtualized, return this.tbodyRef.parentElement.offsetTop + this.tbodyRef.offsetTop;
+    // simply returning the tbodyRef.offsetTop does not account for cases that other parent elements set position:relative
+    // could be the offset parent. We want the offset from tbody to the passed container element. This can change as the
+    // user scrolls so it should only be calculated initially or on resize after scroll position is reset.
+    this.tbodyRef.getBoundingClientRect().top - container.getBoundingClientRect().top;
 
   registerContainer = () => {
     setTimeout(() => {
-      this.props.container() && this.props.container().addEventListener('scroll', this.onScroll);
+      const element = this.props.container();
+      element && element.addEventListener('scroll', this.onScroll);
+      this._detectElementResize = createDetectElementResize();
+      this._detectElementResize.addResizeListener(element, this.onResize);
+      this.setContainerOffset();
     }, 0);
+  };
+
+  setContainerOffset = () => {
+    const element = this.props.container();
+    if (element) {
+      this.containerOffset = this.getBodyOffset(element);
+    }
   };
 
   calculateRows = () => {
@@ -123,9 +136,12 @@ class Body extends React.Component {
 
   componentDidMount() {
     this.checkMeasurements();
-    this.props.container && this.registerContainer();
-    this._detectElementResize = createDetectElementResize();
-    this._detectElementResize.addResizeListener(this.tbodyRef, this.onResize);
+    if (this.props.container) {
+      this.registerContainer();
+    } else {
+      this._detectElementResize = createDetectElementResize();
+      this._detectElementResize.addResizeListener(this.tbodyRef, this.onResize);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -138,11 +154,12 @@ class Body extends React.Component {
   }
 
   onResize() {
-    // reset all measurements & `measuredRows`, then check again
+    // if the containing element resizes reset all measurements & `measuredRows`
     this.initialMeasurement = true;
     this.scrollTop = 0;
     this.setState(initialContext);
     this.measuredRows = {};
+    this.setContainerOffset();
     this.checkMeasurements();
   }
 
@@ -158,7 +175,7 @@ class Body extends React.Component {
     if (this.scrollTop === scrollTop) {
       return;
     }
-    this.scrollTop = container ? scrollTop - this.getBodyOffset() : scrollTop;
+    this.scrollTop = container ? scrollTop - this.containerOffset : scrollTop;
     this.setState(this.calculateRows());
   }
 
@@ -199,9 +216,13 @@ class Body extends React.Component {
         'data-rowkey': extra.rowKey,
         ...(onRow ? onRow(row, extra) : {})
       }),
-      rowsToRender,
-      onScroll: this.onScroll
+      rowsToRender
     };
+
+    // do not listen to tbody onScroll if we are using window scroller
+    if (!container) {
+      tableBodyProps.onScroll = this.onScroll;
+    }
 
     return (
       <VirtualizedBodyContext.Provider
