@@ -50,6 +50,7 @@
     "postbuild": "node ./build/copyStyles.js"
   },
   "devDependencies": {
+    "@patternfly/react-table": "git+https://git@github.com/priley86/react-table.git",
     "css": "^2.2.3",
     "fs-extra": "^6.0.1",
     "glob": "^7.1.2"
