@@ -92,7 +92,7 @@ var WindowScroller = function (_React$PureComponent) {
     _this._unregisterResizeListener = function (element) {
       if (element === window) {
         window.removeEventListener('resize', _this.onResize, false);
-      } else if (element) {
+      } else if (element && element.__resizeListeners__) {
         _this._detectElementResize.removeResizeListener(element, _this.onResize);
       }
     };

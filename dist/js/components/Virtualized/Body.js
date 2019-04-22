@@ -146,11 +146,13 @@ var Body = function (_React$Component) {
     };
 
     _this.getBodyOffset = function (container) {
-      // possibly a bug in reactabular-virtualized
-      // this.tbodyRef.parentElement.offsetTop + this.tbodyRef.offsetTop;
-      console.log(_this.tbodyRef.getBoundingClientRect().top - container.getBoundingClientRect().top);
-      return _this.tbodyRef.getBoundingClientRect().top - container.getBoundingClientRect().top;
-      // return this.tbodyRef.offsetTop;
+      return (
+        // this is a bug in reactabular-virtualized, return this.tbodyRef.parentElement.offsetTop + this.tbodyRef.offsetTop;
+        // simply returning the tbodyRef.offsetTop does not account for cases that other parent elements set position:relative
+        // could be the offset parent. We want the offset from tbody to the passed container element. This can change as the
+        // user scrolls so it should only be calculated initially or on resize after scroll position is reset.
+        _this.tbodyRef.getBoundingClientRect().top - container.getBoundingClientRect().top
+      );
     };
 
     _this.registerContainer = function () {
@@ -164,7 +166,7 @@ var Body = function (_React$Component) {
     };
 
     _this.setContainerOffset = function () {
-      var element = _this.props.container();
+      var element = _this.props.container && _this.props.container();
       if (element) {
         _this.containerOffset = _this.getBodyOffset(element);
       }
@@ -213,13 +215,15 @@ var Body = function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+      if (this.tbodyRef && this.tbodyRef.__resizeListeners__) {
+        this.tbodyRef && this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+      }
       clearTimeout(this.timeoutId);
     }
   }, {
     key: 'onResize',
     value: function onResize() {
-      // reset all measurements & `measuredRows`, then check again
+      // if the containing element resizes reset all measurements & `measuredRows`
       this.initialMeasurement = true;
       this.scrollTop = 0;
       this.setState(initialContext);
