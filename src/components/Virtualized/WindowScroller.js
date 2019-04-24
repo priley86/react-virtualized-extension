@@ -191,7 +191,7 @@ class WindowScroller extends React.PureComponent {
   _unregisterResizeListener = element => {
     if (element === window) {
       window.removeEventListener('resize', this.onResize, false);
-    } else if (element) {
+    } else if (element && element.__resizeListeners__) {
       this._detectElementResize.removeResizeListener(element, this.onResize);
     }
   };

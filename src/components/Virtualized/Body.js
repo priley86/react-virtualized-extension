@@ -117,7 +117,7 @@ class Body extends React.Component {
   };
 
   setContainerOffset = () => {
-    const element = this.props.container();
+    const element = this.props.container && this.props.container();
     if (element) {
       this.containerOffset = this.getBodyOffset(element);
     }
@@ -149,7 +149,9 @@ class Body extends React.Component {
   }
 
   componentWillUnmount() {
-    this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+    if (this.tbodyRef && this.tbodyRef.__resizeListeners__) {
+      this.tbodyRef && this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+    }
     clearTimeout(this.timeoutId);
   }
 

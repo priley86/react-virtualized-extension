@@ -40,10 +40,8 @@ class VirtualizedRowWrapper extends React.Component {
     this.updateRowHeight();
   }
   componentDidUpdate() {
-    // Capture height data only during initial measurement or during resize
-    if (this.props.initialMeasurement) {
-      this.updateRowHeight();
-    }
+    // update height every update since we are dealing with flex css that can change row heights
+    this.updateRowHeight();
   }
 
   render() {

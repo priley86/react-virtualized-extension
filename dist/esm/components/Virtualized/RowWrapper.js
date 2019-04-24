@@ -59,10 +59,8 @@ var VirtualizedRowWrapper = function (_React$Component) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
-      // Capture height data only during initial measurement or during resize
-      if (this.props.initialMeasurement) {
-        this.updateRowHeight();
-      }
+      // update height every update since we are dealing with flex css that can change row heights
+      this.updateRowHeight();
     }
   }, {
     key: 'render',
