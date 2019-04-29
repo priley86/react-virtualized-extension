@@ -1,6 +1,6 @@
 ---
 title: 'Window Scroller'
-section: 'virtual-scroll'
+section: 'Virtual Scroll'
 ---
 
 import React from 'react';

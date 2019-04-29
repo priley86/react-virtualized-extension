@@ -76,7 +76,7 @@ var VirtualizedRowWrapper = function (_React$Component) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
-      // update height every update since we are dealing with flex css that can change row heights
+      // update height every update since we have flex css that can change row heights after resize rendering
       this.updateRowHeight();
     }
   }, {

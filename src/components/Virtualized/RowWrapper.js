@@ -40,7 +40,7 @@ class VirtualizedRowWrapper extends React.Component {
     this.updateRowHeight();
   }
   componentDidUpdate() {
-    // update height every update since we are dealing with flex css that can change row heights
+    // update height every update since we have flex css that can change row heights after resize rendering
     this.updateRowHeight();
   }
 
