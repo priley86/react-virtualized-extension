@@ -23,23 +23,35 @@ var calculateRows = function calculateRows(_ref) {
   var startIndex = 0;
   var startHeight = 0;
   var accruedHeight = 0;
+
+  //default overscan to 10 for now, could be accepted as a prop in the future
+  var overscan = 10;
+
   for (var i = 0; i < Object.keys(measuredRows).length; i++) {
-    accruedHeight += measuredRows[i + '-row'];
+    // measuredRows use aria-rowindex as identifiers which is 1 based
+    accruedHeight += measuredRows[i + 1];
+
     if (scrollTop < accruedHeight) {
       startIndex = i;
       break;
+    } else if (i + overscan > Object.keys(measuredRows).length) {
+      // stop accruing after we reach i + overscan
+      startHeight = accruedHeight;
+      startIndex = i;
+      break;
     } else {
+      // accrue and continue
       startHeight = accruedHeight;
     }
   }
 
   // averageHeight of measuredRows can still be used to closely approximate amount of rows to render
   // if this causes issues w/ row visibility, exact heights can still be used
-  var averageHeight = (0, _calculateAverageHeight2.default)({ measuredRows: measuredRows, rows: rows, rowKey: rowKey });
-  var amountOfRowsToRender = Math.ceil(height / averageHeight) + 2;
+  var averageHeight = (0, _calculateAverageHeight2.default)(measuredRows);
+  var amountOfRowsToRender = Math.ceil(height / averageHeight) + overscan;
 
-  var zeroedIndex = startIndex;
-  var rowsToRender = rows.slice(zeroedIndex, Math.max(startIndex + amountOfRowsToRender, 0));
+  // const zeroedIndex = startIndex;
+  var rowsToRender = rows.slice(startIndex, Math.max(startIndex + amountOfRowsToRender, 0));
 
   if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined' && window.LOG_VIRTUALIZED) {
     console.log(
@@ -65,8 +77,8 @@ var calculateRows = function calculateRows(_ref) {
 
   return {
     amountOfRowsToRender: amountOfRowsToRender,
-    startIndex: zeroedIndex,
-    showExtraRow: !(zeroedIndex % 2),
+    startIndex: startIndex,
+    showExtraRow: !(startIndex % 2),
     startHeight: startHeight,
     endHeight: endHeight
   };

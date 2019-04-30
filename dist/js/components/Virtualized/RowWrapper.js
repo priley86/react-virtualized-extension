@@ -56,7 +56,7 @@ var VirtualizedRowWrapper = function (_React$Component) {
             updateHeight = _this$props.updateHeight,
             rowProps = _this$props.rowProps;
 
-        updateHeight(rowProps['data-rowkey'], _this.getAbsoluteHeight(_this.trRef));
+        updateHeight(rowProps['aria-rowindex'], _this.getAbsoluteHeight(_this.trRef));
       }
     }, _this.getAbsoluteHeight = function (el) {
       var styles = window.getComputedStyle(el);
@@ -86,9 +86,15 @@ var VirtualizedRowWrapper = function (_React$Component) {
           updateHeight = _props.updateHeight,
           initialMeasurement = _props.initialMeasurement,
           row = _props.row,
-          props = _objectWithoutProperties(_props, ['updateHeight', 'initialMeasurement', 'row']);
+          rowProps = _props.rowProps,
+          props = _objectWithoutProperties(_props, ['updateHeight', 'initialMeasurement', 'row', 'rowProps']);
 
-      return _react2.default.createElement(_reactTable.RowWrapper, _extends({ trRef: this.setTrRef, row: row, 'aria-rowindex': row['aria-rowindex'] }, props));
+      return _react2.default.createElement(_reactTable.RowWrapper, _extends({
+        trRef: this.setTrRef,
+        row: row,
+        'aria-rowindex': row['aria-rowindex'],
+        'data-id': rowProps['data-id']
+      }, props));
     }
   }], [{
     key: 'shouldComponentUpdate',
@@ -111,7 +117,8 @@ var VirtualizedRowWrapper = function (_React$Component) {
 
 VirtualizedRowWrapper.propTypes = _extends({}, _reactTable.RowWrapper.propTypes, {
   rowProps: _propTypes2.default.shape({
-    'data-rowkey': _propTypes2.default.string.isRequired
+    'data-id': _propTypes2.default.string.isRequired,
+    'aria-rowindex': _propTypes2.default.number.isRequired
   }).isRequired,
   updateHeight: _propTypes2.default.func.isRequired,
   initialMeasurement: _propTypes2.default.bool.isRequired

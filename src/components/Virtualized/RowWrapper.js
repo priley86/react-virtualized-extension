@@ -15,7 +15,7 @@ class VirtualizedRowWrapper extends React.Component {
   updateRowHeight = () => {
     if (this.trRef) {
       const { updateHeight, rowProps } = this.props;
-      updateHeight(rowProps['data-rowkey'], this.getAbsoluteHeight(this.trRef));
+      updateHeight(rowProps['aria-rowindex'], this.getAbsoluteHeight(this.trRef));
     }
   };
 
@@ -45,14 +45,23 @@ class VirtualizedRowWrapper extends React.Component {
   }
 
   render() {
-    const { updateHeight, initialMeasurement, row, ...props } = this.props;
-    return <RowWrapper trRef={this.setTrRef} row={row} aria-rowindex={row['aria-rowindex']} {...props} />;
+    const { updateHeight, initialMeasurement, row, rowProps, ...props } = this.props;
+    return (
+      <RowWrapper
+        trRef={this.setTrRef}
+        row={row}
+        aria-rowindex={row['aria-rowindex']}
+        data-id={rowProps['data-id']}
+        {...props}
+      />
+    );
   }
 }
 VirtualizedRowWrapper.propTypes = {
   ...RowWrapper.propTypes,
   rowProps: PropTypes.shape({
-    'data-rowkey': PropTypes.string.isRequired
+    'data-id': PropTypes.string.isRequired,
+    'aria-rowindex': PropTypes.number.isRequired
   }).isRequired,
   updateHeight: PropTypes.func.isRequired,
   initialMeasurement: PropTypes.bool.isRequired

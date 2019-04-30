@@ -28,8 +28,8 @@
   "homepage": "https://github.com/patternfly/patternfly-react/tree/master/packages/patternfly-4/",
   "dependencies": {
     "@patternfly/patternfly": "2.6.5",
-    "@patternfly/react-core": "^3.16.1",
-    "@patternfly/react-icons": "^3.8.0",
+    "@patternfly/react-core": "^3.16.10",
+    "@patternfly/react-icons": "^3.8.1",
     "@patternfly/react-styles": "^3.2.0",
     "exenv": "^1.2.2",
     "reactabular-table": "^8.14.0"
@@ -53,6 +53,7 @@
     "@patternfly/react-table": "git+https://git@github.com/priley86/react-table.git",
     "css": "^2.2.3",
     "fs-extra": "^6.0.1",
-    "glob": "^7.1.2"
+    "glob": "^7.1.2",
+    "uuid": "^3.3.2"
   }
 }

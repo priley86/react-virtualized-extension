@@ -19,8 +19,6 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactabularTable = require('reactabular-table');
-
 var _reactTable = require('@patternfly/react-table');
 
 var _calculateAverageHeight = require('./utils/calculateAverageHeight');
@@ -82,11 +80,7 @@ var Body = function (_React$Component) {
       var startIndex = parseInt(index, 10);
 
       if (startIndex >= 0) {
-        var startHeight = (0, _calculateAverageHeight2.default)({
-          measuredRows: _this.measuredRows,
-          rows: rows,
-          rowKey: rowKey
-        }) * startIndex;
+        var startHeight = (0, _calculateAverageHeight2.default)(_this.measuredRows) * startIndex;
 
         _this.scrollTop = startHeight;
         _this.tbodyRef.scrollTop = startHeight;
@@ -137,9 +131,10 @@ var Body = function (_React$Component) {
 
     _this.rowsToRender = function (rows, startIndex, amountOfRowsToRender, rowKey) {
       var renderedRows = rows.slice(startIndex, startIndex + amountOfRowsToRender).map(function (rowData, rowIndex) {
+        var ariaRowIndex = startIndex + rowIndex + 1; // aria-rowindex should be 1-based, not 0-based.
         return _extends({}, rowData, {
-          'aria-rowindex': startIndex + rowIndex + 1, // aria-rowindex should be 1-based, not 0-based.
-          _measured: !!_this.measuredRows[(0, _reactabularTable.resolveRowKey)({ rowData: rowData, rowIndex: rowIndex, rowKey: rowKey })]
+          'aria-rowindex': ariaRowIndex,
+          _measured: !!_this.measuredRows[ariaRowIndex]
         });
       });
       return renderedRows;
@@ -291,7 +286,8 @@ var Body = function (_React$Component) {
         onRow: function onRow(row, extra) {
           return _extends({
             // Pass index so that row heights can be tracked properly
-            'data-rowkey': extra.rowKey
+            'data-id': row.id || row['aria-rowindex'],
+            'aria-rowindex': row['aria-rowindex']
           }, _onRow ? _onRow(row, extra) : {});
         },
         rowsToRender: rowsToRender

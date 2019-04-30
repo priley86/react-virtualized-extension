@@ -11,6 +11,7 @@ VirtualizedBodyWrapper,
 VirtualizedRowWrapper,
 WindowScroller
 } from '@patternfly/react-virtualized-extension';
+import UUID from 'uuid/v1';
 
 ## Window Scroller Example
 
@@ -34,7 +35,7 @@ class WindowScrollerExample extends React.Component {
     const rows = [];
     for (let i = 0; i < 100; i++) {
       rows.push({
-        id: i,
+        id: UUID(),
         cells: [`one-${i}`, `two-${i}`, `three-${i}`, `four-${i}`, `five-${i}`]
       });
     }

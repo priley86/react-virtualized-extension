@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { resolveRowKey } from 'reactabular-table';
 import { TableBody, TableContext } from '@patternfly/react-table';
 import calculateAverageHeight from './utils/calculateAverageHeight';
 import calculateRows from './utils/calculateRows';
@@ -38,12 +37,7 @@ class Body extends React.Component {
     const startIndex = parseInt(index, 10);
 
     if (startIndex >= 0) {
-      const startHeight =
-        calculateAverageHeight({
-          measuredRows: this.measuredRows,
-          rows,
-          rowKey
-        }) * startIndex;
+      const startHeight = calculateAverageHeight(this.measuredRows) * startIndex;
 
       this.scrollTop = startHeight;
       this.tbodyRef.scrollTop = startHeight;
@@ -91,11 +85,14 @@ class Body extends React.Component {
   // Attach information about measuring status. This way we can implement
   // proper shouldComponentUpdate
   rowsToRender = (rows, startIndex, amountOfRowsToRender, rowKey) => {
-    const renderedRows = rows.slice(startIndex, startIndex + amountOfRowsToRender).map((rowData, rowIndex) => ({
-      ...rowData,
-      'aria-rowindex': startIndex + rowIndex + 1, // aria-rowindex should be 1-based, not 0-based.
-      _measured: !!this.measuredRows[resolveRowKey({ rowData, rowIndex, rowKey })]
-    }));
+    const renderedRows = rows.slice(startIndex, startIndex + amountOfRowsToRender).map((rowData, rowIndex) => {
+      const ariaRowIndex = startIndex + rowIndex + 1; // aria-rowindex should be 1-based, not 0-based.
+      return {
+        ...rowData,
+        'aria-rowindex': ariaRowIndex,
+        _measured: !!this.measuredRows[ariaRowIndex]
+      };
+    });
     return renderedRows;
   };
 
@@ -215,7 +212,8 @@ class Body extends React.Component {
       style,
       onRow: (row, extra) => ({
         // Pass index so that row heights can be tracked properly
-        'data-rowkey': extra.rowKey,
+        'data-id': row.id || row['aria-rowindex'],
+        'aria-rowindex': row['aria-rowindex'],
         ...(onRow ? onRow(row, extra) : {})
       }),
       rowsToRender
