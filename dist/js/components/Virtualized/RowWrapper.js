@@ -16,10 +16,6 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _lodashEs = require('lodash-es');
-
-var _reactabularTable = require('reactabular-table');
-
 var _reactTable = require('@patternfly/react-table');
 
 var _Body = require('./Body');
