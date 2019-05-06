@@ -79,20 +79,6 @@ var VirtualizedRowWrapper = function (_React$Component) {
         'data-id': rowProps['data-id']
       }, props));
     }
-  }], [{
-    key: 'shouldComponentUpdate',
-    value: function shouldComponentUpdate(nextProps) {
-      var _props2 = this.props,
-          columns = _props2.columns,
-          rowData = _props2.rowData;
-      // Update only if a row has not been measured and either
-      // columns or rowData hasn't changed
-
-      if (nextProps.rowData._measured) {
-        return !(columnsAreEqual(columns, nextProps.columns) && isEqual(rowData, nextProps.rowData));
-      }
-      return true;
-    }
   }]);
 
   return VirtualizedRowWrapper;

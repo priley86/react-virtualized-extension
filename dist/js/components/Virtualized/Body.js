@@ -44,7 +44,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var initialContext = {
-  amountOfRowsToRender: 3, // First few rows for initial measurement
+  amountOfRowsToRender: 0,
   startIndex: 0, // Index where to start rendering
   startHeight: 0, // Heights for extra rows to mimic scrolling
   endHeight: 0,
@@ -275,11 +275,7 @@ var Body = function (_React$Component) {
       }
 
       var style = { height: height };
-      if (!container) {
-        // if we do not have a parent container to scroll, set the body to scroll
-        style.display = 'block';
-        style.overflow = 'auto';
-      }
+
       var tableBodyProps = _extends({}, props, {
         height: height,
         style: style,
@@ -290,12 +286,15 @@ var Body = function (_React$Component) {
             'aria-rowindex': row['aria-rowindex']
           }, _onRow ? _onRow(row, extra) : {});
         },
-        rowsToRender: rowsToRender
+        rows: rowsToRender
       });
 
-      // do not listen to tbody onScroll if we are using window scroller
       if (!container) {
+        // do not listen to tbody onScroll if we are using window scroller
         tableBodyProps.onScroll = this.onScroll;
+        // if we do not have a parent container to scroll, set the body to scroll
+        tableBodyProps.style.display = 'block';
+        tableBodyProps.style.overflow = 'auto';
       }
 
       return _react2.default.createElement(
@@ -353,8 +352,6 @@ VirtualizedBody.propTypes = {
   rowKey: _propTypes2.default.string,
   /** Function that is fired when user clicks on row.  */
   onRowClick: _propTypes2.default.func,
-  /** Virtualized rows (optional provided in place of rows) */
-  rowsToRender: _propTypes2.default.array,
   /** the height of the body or window container */
   height: heightPropCheck,
   /** a callback return the container ref */

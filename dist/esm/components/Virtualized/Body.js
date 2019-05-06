@@ -18,7 +18,7 @@ import calculateRows from './utils/calculateRows';
 import createDetectElementResize from './utils/detectElementResize';
 
 var initialContext = {
-  amountOfRowsToRender: 3, // First few rows for initial measurement
+  amountOfRowsToRender: 0,
   startIndex: 0, // Index where to start rendering
   startHeight: 0, // Heights for extra rows to mimic scrolling
   endHeight: 0,
@@ -249,11 +249,7 @@ var Body = function (_React$Component) {
       }
 
       var style = { height: height };
-      if (!container) {
-        // if we do not have a parent container to scroll, set the body to scroll
-        style.display = 'block';
-        style.overflow = 'auto';
-      }
+
       var tableBodyProps = _extends({}, props, {
         height: height,
         style: style,
@@ -264,12 +260,15 @@ var Body = function (_React$Component) {
             'aria-rowindex': row['aria-rowindex']
           }, _onRow ? _onRow(row, extra) : {});
         },
-        rowsToRender: rowsToRender
+        rows: rowsToRender
       });
 
-      // do not listen to tbody onScroll if we are using window scroller
       if (!container) {
+        // do not listen to tbody onScroll if we are using window scroller
         tableBodyProps.onScroll = this.onScroll;
+        // if we do not have a parent container to scroll, set the body to scroll
+        tableBodyProps.style.display = 'block';
+        tableBodyProps.style.overflow = 'auto';
       }
 
       return React.createElement(
@@ -327,8 +326,6 @@ VirtualizedBody.propTypes = {
   rowKey: PropTypes.string,
   /** Function that is fired when user clicks on row.  */
   onRowClick: PropTypes.func,
-  /** Virtualized rows (optional provided in place of rows) */
-  rowsToRender: PropTypes.array,
   /** the height of the body or window container */
   height: heightPropCheck,
   /** a callback return the container ref */
