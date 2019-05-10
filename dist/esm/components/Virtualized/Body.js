@@ -134,6 +134,14 @@ var Body = function (_React$Component) {
       }, 0);
     };
 
+    _this.unregisterContainer = function () {
+      var element = _this.props.container();
+      element.removeEventListener('scroll', _this.onScroll);
+      if (element.__resizeListeners__) {
+        _this._detectElementResize.removeResizeListener(element, _this.onResize);
+      }
+    };
+
     _this.setContainerOffset = function () {
       var element = _this.props.container && _this.props.container();
       if (element) {
@@ -185,7 +193,10 @@ var Body = function (_React$Component) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       if (this.tbodyRef && this.tbodyRef.__resizeListeners__) {
-        this.tbodyRef && this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+        this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+      }
+      if (this.props.container()) {
+        this.unregisterContainer();
       }
       clearTimeout(this.timeoutId);
     }

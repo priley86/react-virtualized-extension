@@ -113,6 +113,14 @@ class Body extends React.Component {
     }, 0);
   };
 
+  unregisterContainer = () => {
+    const element = this.props.container();
+    element.removeEventListener('scroll', this.onScroll);
+    if (element.__resizeListeners__) {
+      this._detectElementResize.removeResizeListener(element, this.onResize);
+    }
+  };
+
   setContainerOffset = () => {
     const element = this.props.container && this.props.container();
     if (element) {
@@ -147,7 +155,10 @@ class Body extends React.Component {
 
   componentWillUnmount() {
     if (this.tbodyRef && this.tbodyRef.__resizeListeners__) {
-      this.tbodyRef && this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+      this._detectElementResize.removeResizeListener(this.tbodyRef, this.onResize);
+    }
+    if (this.props.container()) {
+      this.unregisterContainer();
     }
     clearTimeout(this.timeoutId);
   }
