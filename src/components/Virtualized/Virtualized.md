@@ -87,24 +87,27 @@ class VirtualizedExample extends React.Component {
         key={key}
         parent={parent}
         rowIndex={index}>
-        <tr style={style} className={className}>
-          <td className={columns[0].props.className}>{text}</td>
-          <td className={columns[1].props.className}>{text}</td>
-          <td className={columns[2].props.className}>{text}</td>
-          <td className={columns[3].props.className}>{text}</td>
-          <td className={columns[4].props.className}>{text}</td>
+        <tr style={style} className={className} role="row">
+          <td className={columns[0].props.className} role="gridcell">{text}</td>
+          <td className={columns[1].props.className} role="gridcell">{text}</td>
+          <td className={columns[2].props.className} role="gridcell">{text}</td>
+          <td className={columns[3].props.className} role="gridcell">{text}</td>
+          <td className={columns[4].props.className} role="gridcell">{text}</td>
         </tr>
       </CellMeasurer>;
     }
 
     return (
-      <div>
+      <div
+        aria-label="Scrollable Table"
+        role="grid"
+        aria-rowcount={rows.length}>
         <Table
           caption="Simple Table"
           cells={columns}
           rows={rows}
-          aria-rowcount={rows.length}
           gridBreakPoint={TableGridBreakpoint.none}
+          role="presentation"
         >
           <TableHeader />
         </Table>
@@ -226,26 +229,29 @@ class SortableExample extends React.Component {
         key={key}
         parent={parent}
         rowIndex={index}>
-        <tr style={style} className={className}>
-          <td className={columns[0].props.className}>{text}</td>
-          <td className={columns[1].props.className}>{text}</td>
-          <td className={columns[2].props.className}>{text}</td>
-          <td className={columns[3].props.className}>{text}</td>
-          <td className={columns[4].props.className}>{text}</td>
+        <tr style={style} className={className} role="row">
+          <td className={columns[0].props.className} role="gridcell">{text}</td>
+          <td className={columns[1].props.className} role="gridcell">{text}</td>
+          <td className={columns[2].props.className} role="gridcell">{text}</td>
+          <td className={columns[3].props.className} role="gridcell">{text}</td>
+          <td className={columns[4].props.className} role="gridcell">{text}</td>
         </tr>
       </CellMeasurer>;
     }
 
     return (
-      <div>
+      <div
+        aria-label="Scrollable Table"
+        role="grid"
+        aria-rowcount={rows.length}>
         <Table
           caption="Sortable Virtualized Table"
           cells={columns}
           rows={rows}
-          aria-rowcount={rows.length}
           gridBreakPoint={TableGridBreakpoint.none}
           sortBy={sortBy}
           onSort={this.onSort}
+          role="presentation"
         >
           <TableHeader />
         </Table>
@@ -371,23 +377,26 @@ class SelectableExample extends React.Component {
         key={key}
         parent={parent}
         rowIndex={index}>
-        <tr data-id={index} style={style} className={className}>
-          <td data-key="0" className="pf-c-table__check">
+        <tr data-id={index} style={style} className={className} role="row">
+          <td data-key="0" className="pf-c-table__check" role="gridcell">
             <input type="checkbox" checked={rows[index].selected} 
               onChange={(e) => 
                 { this.onSelect(e, e.target.checked, 0, {id: rows[index].id})}}
               />
           </td>
-          <td className={columns[0].props.className}>{text}</td>
-          <td className={columns[1].props.className}>{text}</td>
-          <td className={columns[2].props.className}>{text}</td>
-          <td className={columns[3].props.className}>{text}</td>
+          <td className={columns[0].props.className} role="gridcell">{text}</td>
+          <td className={columns[1].props.className} role="gridcell">{text}</td>
+          <td className={columns[2].props.className} role="gridcell">{text}</td>
+          <td className={columns[3].props.className} role="gridcell">{text}</td>
         </tr>
       </CellMeasurer>;
     }
 
     return (
-      <div>
+      <div
+        aria-label="Scrollable Table"
+        role="grid"
+        aria-rowcount={rows.length}>
         <Table
           caption="Selectable Virtualized Table"
           cells={columns}
@@ -395,6 +404,7 @@ class SelectableExample extends React.Component {
           aria-rowcount={rows.length}
           gridBreakPoint={TableGridBreakpoint.none}
           onSelect={this.onSelect}
+          role="presentation"
         >
           <TableHeader />
         </Table>
@@ -519,13 +529,13 @@ class ActionsExample extends React.Component {
         key={key}
         parent={parent}
         rowIndex={index}>
-        <tr data-id={index} style={style} className={className}>
-          <td className={columns[0].props.className}>{text}</td>
-          <td className={columns[1].props.className}>{text}</td>
-          <td className={columns[2].props.className}>{text}</td>
-          <td className={columns[3].props.className}>{text}</td>
-          <td className={columns[4].props.className}>{text}</td>
-          <td className={columns[5].props.className}>
+        <tr data-id={index} style={style} className={className} role="row">
+          <td className={columns[0].props.className} role="gridcell">{text}</td>
+          <td className={columns[1].props.className} role="gridcell">{text}</td>
+          <td className={columns[2].props.className} role="gridcell">{text}</td>
+          <td className={columns[3].props.className} role="gridcell">{text}</td>
+          <td className={columns[4].props.className} role="gridcell">{text}</td>
+          <td className={columns[5].props.className} role="gridcell">
             <ActionsColumn
               items={actions}
               rowData={rows[index]}
@@ -537,13 +547,16 @@ class ActionsExample extends React.Component {
     }
 
     return (
-      <div>
+      <div
+        aria-label="Scrollable Table"
+        role="grid"
+        aria-rowcount={rows.length}>
         <Table
           caption="Actions Virtualized Table"
           cells={columns}
           rows={rows}
-          aria-rowcount={rows.length}
           gridBreakPoint={TableGridBreakpoint.none}
+          role="presentation"
         >
           <TableHeader />
         </Table>

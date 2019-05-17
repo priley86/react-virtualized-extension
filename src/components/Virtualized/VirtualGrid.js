@@ -57,6 +57,7 @@ type ScrollPosition = {
 type Props = {
   'aria-label': string,
   'aria-readonly'?: boolean,
+  'aria-rowcount': number,
 
   /**
    * Set the width of the inner scrollable container to 'auto'.
@@ -217,7 +218,13 @@ type Props = {
   tabIndex: ?number,
 
   /** Width of VirtualGrid; this property determines the number of visible (vs virtualized) columns.  */
-  width: number
+  width: number,
+
+  /** Scroll Container element to render */
+  scrollContainerComponent: string | React.ComponentType<any>,
+
+  /** Inner Scroll Container element to render */
+  innerScrollContainerComponent: string | React.ComponentType<any>
 };
 
 type InstanceProps = {
@@ -256,6 +263,7 @@ type State = {
  */
 class VirtualGrid extends React.PureComponent<Props, State> {
   static defaultProps = {
+    'aria-rowcount': 0,
     'aria-label': 'grid',
     'aria-readonly': true,
     autoContainerWidth: false,
@@ -281,7 +289,9 @@ class VirtualGrid extends React.PureComponent<Props, State> {
     scrollToRow: -1,
     style: {},
     tabIndex: 0,
-    isScrollingOptOut: false
+    isScrollingOptOut: false,
+    scrollContainerComponent: 'div',
+    innerScrollContainerComponent: 'div'
   };
 
   // Invokes onSectionRendered callback only when start/stop row or column indices change
@@ -900,7 +910,9 @@ class VirtualGrid extends React.PureComponent<Props, State> {
       role,
       style,
       tabIndex,
-      width
+      width,
+      scrollContainerComponent,
+      innerScrollContainerComponent
     } = this.props;
     const { instanceProps, needToResetStyleCache } = this.state;
 
@@ -961,44 +973,50 @@ class VirtualGrid extends React.PureComponent<Props, State> {
 
     const showNoContentRenderer = childrenToDisplay.length === 0 && height > 0 && width > 0;
 
-    return (
-      <table
-        ref={this._setScrollingContainerRef}
-        {...containerProps}
-        aria-label={this.props['aria-label']}
-        aria-readonly={this.props['aria-readonly']}
-        className={clsx('ReactVirtualized__VirtualGrid', className)}
-        id={id}
-        onScroll={this._onScroll}
-        role={role}
-        style={{
-          ...gridStyle,
-          ...style
-        }}
-        tabIndex={tabIndex}
-      >
-        {childrenToDisplay.length > 0 && (
-          <tbody
-            className="ReactVirtualized__VirtualGrid__innerScrollContainer"
-            role={containerRole}
-            style={{
-              width: autoContainerWidth ? 'auto' : totalColumnsWidth,
-              height: totalRowsHeight,
-              maxWidth: totalColumnsWidth,
-              maxHeight: totalRowsHeight,
-              overflow: 'hidden',
-              pointerEvents: isScrolling ? 'none' : '',
-              position: 'relative',
-              display: 'block',
-              ...containerStyle
-            }}
-          >
-            {childrenToDisplay}
-          </tbody>
-        )}
-        {showNoContentRenderer && noContentRenderer()}
-      </table>
-    );
+    const scrollContainerProps = {
+      ...containerProps,
+      ref: this._setScrollingContainerRef,
+      'aria-label': this.props['aria-label'],
+      'aria-rowcount': this.props['aria-rowcount'],
+      'aria-readonly': this.props['aria-readonly'],
+      className: clsx('ReactVirtualized__VirtualGrid', className),
+      id,
+      onScroll: this._onScroll,
+      role,
+      style: {
+        ...gridStyle,
+        ...style
+      },
+      tabIndex
+    };
+
+    let innerScrollContainer = null;
+    if (childrenToDisplay.length > 0) {
+      const innerScrollContainerProps = {
+        className: 'ReactVirtualized__VirtualGrid__innerScrollContainer',
+        role: containerRole,
+        style: {
+          width: autoContainerWidth ? 'auto' : totalColumnsWidth,
+          height: totalRowsHeight,
+          maxWidth: totalColumnsWidth,
+          maxHeight: totalRowsHeight,
+          overflow: 'hidden',
+          pointerEvents: isScrolling ? 'none' : '',
+          position: 'relative',
+          display: 'block',
+          ...containerStyle
+        }
+      };
+      innerScrollContainer = React.createElement(
+        innerScrollContainerComponent,
+        innerScrollContainerProps,
+        childrenToDisplay
+      );
+    }
+    return React.createElement(scrollContainerComponent, scrollContainerProps, [
+      innerScrollContainer,
+      showNoContentRenderer && noContentRenderer()
+    ]);
   }
 
   /* ---------------------------- Helper methods ---------------------------- */

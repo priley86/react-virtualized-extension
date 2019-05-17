@@ -109,12 +109,12 @@ class WindowScrollerExample extends React.Component {
         key={key}
         parent={parent}
         rowIndex={index}>
-        <tr style={style} className={className}>
-          <td className={columns[0].props.className}>{text}</td>
-          <td className={columns[1].props.className}>{text}</td>
-          <td className={columns[2].props.className}>{text}</td>
-          <td className={columns[3].props.className}>{text}</td>
-          <td className={columns[4].props.className}>{text}</td>
+        <tr style={style} className={className} role="row">
+          <td className={columns[0].props.className} role="gridcell">{text}</td>
+          <td className={columns[1].props.className} role="gridcell">{text}</td>
+          <td className={columns[2].props.className} role="gridcell">{text}</td>
+          <td className={columns[3].props.className} role="gridcell">{text}</td>
+          <td className={columns[4].props.className} role="gridcell">{text}</td>
         </tr>
       </CellMeasurer>;
     }
@@ -122,6 +122,9 @@ class WindowScrollerExample extends React.Component {
     return (
       <div
         id="content-scrollable-1"
+        aria-label="Scrollable Table"
+        role="grid"
+        aria-rowcount={rows.length}
         style={{
           height: 500, /* important note: the scrollable container should have some sort of fixed height, or it should be wrapped in container that is smaller than ReactVirtualized__VirtualGrid container and has overflow visible if using the Window Scroller. See WindowScroller.example.css */
           overflowX: 'auto',
@@ -136,8 +139,8 @@ class WindowScrollerExample extends React.Component {
           caption="WindowScoller allows scrolling of a parent container or the window instead of tbody. It also can be used to dynamically size the table to the size of the scroll element."
           cells={columns}
           rows={rows}
-          aria-rowcount={rows.length}
           gridBreakPoint={TableGridBreakpoint.none}
+          role="presentation"
         >
           <TableHeader />
         </Table>

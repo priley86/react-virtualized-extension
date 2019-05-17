@@ -240,25 +240,38 @@ var VirtualTableBody = function (_React$PureComponent) {
           scrollToIndex = _props.scrollToIndex,
           width = _props.width,
           columns = _props.columns,
-          rows = _props.rows;
+          rows = _props.rows,
+          tabIndex = _props.tabIndex;
 
 
       var classNames = (0, _clsx2.default)('ReactVirtualized__List', className);
 
-      return React.createElement(_VirtualGrid2.default, _extends({}, this.props, {
-        autoContainerWidth: true,
-        cellRenderer: this._cellRenderer,
-        className: classNames,
-        columnWidth: width,
-        columnCount: columns.length,
-        noContentRenderer: noRowsRenderer,
-        onScroll: this._onScroll,
-        onSectionRendered: this._onSectionRendered,
-        ref: this._setRef,
-        scrollToRow: scrollToIndex,
-        columns: columns,
-        rows: rows
-      }));
+      return (
+        // note: these aria props if rendered will break a11y for role="presentation"
+        // this approach attempts to fix non standard table grids
+        // see: https://www.html5accessibility.com/tests/aria-table-fix.html
+        React.createElement(_VirtualGrid2.default, _extends({}, this.props, {
+          'aria-label': null,
+          'aria-readonly': null,
+          'aria-rowcount': null,
+          tabIndex: null,
+          role: 'presentation',
+          autoContainerWidth: true,
+          cellRenderer: this._cellRenderer,
+          className: classNames,
+          columnWidth: width,
+          columnCount: columns.length,
+          noContentRenderer: noRowsRenderer,
+          onScroll: this._onScroll,
+          onSectionRendered: this._onSectionRendered,
+          ref: this._setRef,
+          scrollToRow: scrollToIndex,
+          columns: columns,
+          rows: rows,
+          scrollContainerComponent: 'table',
+          innerScrollContainerComponent: 'tbody'
+        }))
+      );
     }
   }]);
 

@@ -663,7 +663,9 @@ var VirtualGrid = function (_React$PureComponent) {
           role = _props6.role,
           style = _props6.style,
           tabIndex = _props6.tabIndex,
-          width = _props6.width;
+          width = _props6.width,
+          scrollContainerComponent = _props6.scrollContainerComponent,
+          innerScrollContainerComponent = _props6.innerScrollContainerComponent;
       var _state2 = this.state,
           instanceProps = _state2.instanceProps,
           needToResetStyleCache = _state2.needToResetStyleCache;
@@ -723,40 +725,38 @@ var VirtualGrid = function (_React$PureComponent) {
 
       var showNoContentRenderer = childrenToDisplay.length === 0 && height > 0 && width > 0;
 
-      return React.createElement(
-        'table',
-        _extends({
-          ref: this._setScrollingContainerRef
-        }, containerProps, {
-          'aria-label': this.props['aria-label'],
-          'aria-readonly': this.props['aria-readonly'],
-          className: (0, _clsx2.default)('ReactVirtualized__VirtualGrid', className),
-          id: id,
-          onScroll: this._onScroll,
-          role: role,
-          style: _extends({}, gridStyle, style),
-          tabIndex: tabIndex
-        }),
-        childrenToDisplay.length > 0 && React.createElement(
-          'tbody',
-          {
-            className: 'ReactVirtualized__VirtualGrid__innerScrollContainer',
-            role: containerRole,
-            style: _extends({
-              width: autoContainerWidth ? 'auto' : totalColumnsWidth,
-              height: totalRowsHeight,
-              maxWidth: totalColumnsWidth,
-              maxHeight: totalRowsHeight,
-              overflow: 'hidden',
-              pointerEvents: isScrolling ? 'none' : '',
-              position: 'relative',
-              display: 'block'
-            }, containerStyle)
-          },
-          childrenToDisplay
-        ),
-        showNoContentRenderer && noContentRenderer()
-      );
+      var scrollContainerProps = _extends({}, containerProps, {
+        ref: this._setScrollingContainerRef,
+        'aria-label': this.props['aria-label'],
+        'aria-rowcount': this.props['aria-rowcount'],
+        'aria-readonly': this.props['aria-readonly'],
+        className: (0, _clsx2.default)('ReactVirtualized__VirtualGrid', className),
+        id: id,
+        onScroll: this._onScroll,
+        role: role,
+        style: _extends({}, gridStyle, style),
+        tabIndex: tabIndex
+      });
+
+      var innerScrollContainer = null;
+      if (childrenToDisplay.length > 0) {
+        var innerScrollContainerProps = {
+          className: 'ReactVirtualized__VirtualGrid__innerScrollContainer',
+          role: containerRole,
+          style: _extends({
+            width: autoContainerWidth ? 'auto' : totalColumnsWidth,
+            height: totalRowsHeight,
+            maxWidth: totalColumnsWidth,
+            maxHeight: totalRowsHeight,
+            overflow: 'hidden',
+            pointerEvents: isScrolling ? 'none' : '',
+            position: 'relative',
+            display: 'block'
+          }, containerStyle)
+        };
+        innerScrollContainer = React.createElement(innerScrollContainerComponent, innerScrollContainerProps, childrenToDisplay);
+      }
+      return React.createElement(scrollContainerComponent, scrollContainerProps, [innerScrollContainer, showNoContentRenderer && noContentRenderer()]);
     }
 
     /* ---------------------------- Helper methods ---------------------------- */
@@ -1340,6 +1340,7 @@ var VirtualGrid = function (_React$PureComponent) {
 }(React.PureComponent);
 
 VirtualGrid.defaultProps = {
+  'aria-rowcount': 0,
   'aria-label': 'grid',
   'aria-readonly': true,
   autoContainerWidth: false,
@@ -1365,7 +1366,9 @@ VirtualGrid.defaultProps = {
   scrollToRow: -1,
   style: {},
   tabIndex: 0,
-  isScrollingOptOut: false
+  isScrollingOptOut: false,
+  scrollContainerComponent: 'div',
+  innerScrollContainerComponent: 'div'
 };
 
 

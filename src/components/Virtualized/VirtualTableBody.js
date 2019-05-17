@@ -30,6 +30,7 @@ import clsx from 'clsx';
 
 type Props = {
   'aria-label'?: string,
+  'aria-rowcount?': number,
 
   /**
    * Removes fixed height from the scrollingContainer so that the total height
@@ -194,13 +195,21 @@ export default class VirtualTableBody extends React.PureComponent<Props> {
   }
 
   render() {
-    const { className, noRowsRenderer, scrollToIndex, width, columns, rows } = this.props;
+    const { className, noRowsRenderer, scrollToIndex, width, columns, rows, tabIndex } = this.props;
 
     const classNames = clsx('ReactVirtualized__List', className);
 
     return (
+      // note: these aria props if rendered will break a11y for role="presentation"
+      // this approach attempts to fix non standard table grids
+      // see: https://www.html5accessibility.com/tests/aria-table-fix.html
       <VirtualGrid
         {...this.props}
+        aria-label={null}
+        aria-readonly={null}
+        aria-rowcount={null}
+        tabIndex={null}
+        role="presentation"
         autoContainerWidth
         cellRenderer={this._cellRenderer}
         className={classNames}
@@ -213,6 +222,8 @@ export default class VirtualTableBody extends React.PureComponent<Props> {
         scrollToRow={scrollToIndex}
         columns={columns}
         rows={rows}
+        scrollContainerComponent="table"
+        innerScrollContainerComponent="tbody"
       />
     );
   }
