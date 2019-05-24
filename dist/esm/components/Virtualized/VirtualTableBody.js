@@ -222,7 +222,8 @@ var VirtualTableBody = function (_React$PureComponent) {
           width = _props.width,
           columns = _props.columns,
           rows = _props.rows,
-          tabIndex = _props.tabIndex;
+          tabIndex = _props.tabIndex,
+          style = _props.style;
 
 
       var classNames = clsx('ReactVirtualized__List', className);
@@ -232,9 +233,15 @@ var VirtualTableBody = function (_React$PureComponent) {
         // this approach attempts to fix non standard table grids
         // see: https://www.html5accessibility.com/tests/aria-table-fix.html
         React.createElement(VirtualGrid, _extends({}, this.props, {
+          style: _extends({
+            tableLayout: 'fixed',
+            display: 'block'
+          }, style),
+          containerStyle: {
+            display: 'block'
+          },
           'aria-label': null,
           'aria-readonly': null,
-          'aria-rowcount': null,
           tabIndex: null,
           role: 'presentation',
           autoContainerWidth: true,

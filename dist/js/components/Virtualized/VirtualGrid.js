@@ -680,9 +680,7 @@ var VirtualGrid = function (_React$PureComponent) {
         position: 'relative',
         width: autoWidth ? 'auto' : width,
         WebkitOverflowScrolling: 'touch',
-        willChange: 'transform',
-        tableLayout: 'fixed',
-        display: 'block'
+        willChange: 'transform'
       };
 
       if (needToResetStyleCache) {
@@ -728,7 +726,6 @@ var VirtualGrid = function (_React$PureComponent) {
       var scrollContainerProps = _extends({}, containerProps, {
         ref: this._setScrollingContainerRef,
         'aria-label': this.props['aria-label'],
-        'aria-rowcount': this.props['aria-rowcount'],
         'aria-readonly': this.props['aria-readonly'],
         className: (0, _clsx2.default)('ReactVirtualized__VirtualGrid', className),
         id: id,
@@ -750,8 +747,7 @@ var VirtualGrid = function (_React$PureComponent) {
             maxHeight: totalRowsHeight,
             overflow: 'hidden',
             pointerEvents: isScrolling ? 'none' : '',
-            position: 'relative',
-            display: 'block'
+            position: 'relative'
           }, containerStyle)
         };
         innerScrollContainer = React.createElement(innerScrollContainerComponent, innerScrollContainerProps, childrenToDisplay);
@@ -1340,7 +1336,6 @@ var VirtualGrid = function (_React$PureComponent) {
 }(React.PureComponent);
 
 VirtualGrid.defaultProps = {
-  'aria-rowcount': 0,
   'aria-label': 'grid',
   'aria-readonly': true,
   autoContainerWidth: false,

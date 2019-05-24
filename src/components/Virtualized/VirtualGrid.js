@@ -57,7 +57,6 @@ type ScrollPosition = {
 type Props = {
   'aria-label': string,
   'aria-readonly'?: boolean,
-  'aria-rowcount': number,
 
   /**
    * Set the width of the inner scrollable container to 'auto'.
@@ -263,7 +262,6 @@ type State = {
  */
 class VirtualGrid extends React.PureComponent<Props, State> {
   static defaultProps = {
-    'aria-rowcount': 0,
     'aria-label': 'grid',
     'aria-readonly': true,
     autoContainerWidth: false,
@@ -925,9 +923,7 @@ class VirtualGrid extends React.PureComponent<Props, State> {
       position: 'relative',
       width: autoWidth ? 'auto' : width,
       WebkitOverflowScrolling: 'touch',
-      willChange: 'transform',
-      tableLayout: 'fixed',
-      display: 'block'
+      willChange: 'transform'
     };
 
     if (needToResetStyleCache) {
@@ -977,7 +973,6 @@ class VirtualGrid extends React.PureComponent<Props, State> {
       ...containerProps,
       ref: this._setScrollingContainerRef,
       'aria-label': this.props['aria-label'],
-      'aria-rowcount': this.props['aria-rowcount'],
       'aria-readonly': this.props['aria-readonly'],
       className: clsx('ReactVirtualized__VirtualGrid', className),
       id,
@@ -1003,7 +998,6 @@ class VirtualGrid extends React.PureComponent<Props, State> {
           overflow: 'hidden',
           pointerEvents: isScrolling ? 'none' : '',
           position: 'relative',
-          display: 'block',
           ...containerStyle
         }
       };
