@@ -700,6 +700,7 @@ var VirtualGrid = function (_React$PureComponent) {
       if (childrenToDisplay.length > 0) {
         var innerScrollContainerProps = {
           className: 'ReactVirtualized__VirtualGrid__innerScrollContainer',
+          key: 'ReactVirtualized__VirtualGrid__innerScrollContainer',
           role: containerRole,
           style: _extends({
             width: autoContainerWidth ? 'auto' : totalColumnsWidth,
